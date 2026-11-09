@@ -189,15 +189,15 @@ export const SLOTS = [
 ]
 export const CANDLE_BASE_Y = 100
 
-export function Cake({ children, svgRef }) {
+export function Cake({ children, svgRef, label }) {
   return (
-    <svg ref={svgRef} viewBox="0 0 320 300" className="cake-svg" aria-hidden="true">
+    <svg ref={svgRef} viewBox="0 0 320 316" className="cake-svg" aria-hidden="true">
       <defs>
         <clipPath id="clipBot"><rect x="35" y="170" width="250" height="95" rx="20" /></clipPath>
         <clipPath id="clipTop"><rect x="75" y="100" width="170" height="72" rx="18" /></clipPath>
       </defs>
-      <ellipse className="ol" cx="160" cy="268" rx="150" ry="20" fill="#fff" />
-      <ellipse cx="160" cy="268" rx="120" ry="12" fill="#ffd6e8" opacity=".6" />
+      <ellipse className="ol" cx="160" cy="272" rx="150" ry="22" fill="#fff" />
+      <ellipse cx="160" cy="272" rx="120" ry="13" fill="#ffd6e8" opacity=".6" />
       {/* 아랫단 */}
       <rect x="35" y="170" width="250" height="95" rx="20" fill="#ffb3d4" />
       <g clipPath="url(#clipBot)"><path className="ol" fill="#fff6fa" d={frost(35, 285, 170, 8, 24)} /></g>
@@ -206,6 +206,12 @@ export function Cake({ children, svgRef }) {
       <rect x="75" y="100" width="170" height="72" rx="18" fill="#fff0f6" />
       <g clipPath="url(#clipTop)"><path className="ol" fill="#ff7fb5" d={frost(75, 245, 100, 6, 22)} /></g>
       <rect className="ol" x="75" y="100" width="170" height="72" rx="18" fill="none" />
+      {label && (
+        <g transform="rotate(-2 160 282)">
+          <rect className="ol" x="110" y="266" width="100" height="32" rx="11" fill="#ffd84d" />
+          <text x="160" y="289" textAnchor="middle" className="cake-label">{label}</text>
+        </g>
+      )}
       {children}
     </svg>
   )

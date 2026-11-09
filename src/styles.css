@@ -177,6 +177,7 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 .cake-wrap { width: min(84vw, 340px); }
 .cake-inner { width: 100%; }
 .cake-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.cake-label { font-family: var(--font); font-size: 22px; fill: var(--ink); letter-spacing: 2px; }
 .candle { cursor: pointer; }
 .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flick .5s ease-in-out infinite alternate; }
 @keyframes flick { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(.88, 1.12) rotate(3deg); } }

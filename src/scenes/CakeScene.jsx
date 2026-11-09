@@ -116,7 +116,7 @@ export default function CakeScene({ go }) {
 
       <div className="cake-wrap" data-in>
         <div ref={cake} className="cake-inner">
-          <Cake>
+          <Cake label={config.name}>
             {placed.map((p) => <Topping key={p.id} type={p.type} slot={p.slot} />)}
             {lit && out.map((o, i) => (
               <Candle key={i} i={i} x={candleX(i, config.candleCount)} out={o} onTap={() => blowOne(i)} />
