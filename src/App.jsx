@@ -7,6 +7,7 @@ import Countdown from './scenes/Countdown.jsx'
 import CakeScene from './scenes/CakeScene.jsx'
 import Letter from './scenes/Letter.jsx'
 import Ending from './scenes/Ending.jsx'
+import { SoundIcon } from './art/index.jsx'
 import { bgm } from './bgm.js'
 import { sfx } from './sfx.js'
 import { haptic } from './fx.js'
@@ -56,8 +57,8 @@ export default function App() {
         {scene === 'letter' && <Letter go={go} />}
         {scene === 'end' && <Ending onReplay={replay} />}
       </div>
-      <button className="mute" onClick={toggleMute} aria-label={muted ? '소리 켜기' : '소리 끄기'}>
-        {muted ? '🔇' : '🔊'}
+      <button className={`mute ${muted ? 'off' : ''}`} onClick={toggleMute} aria-label={muted ? '소리 켜기' : '소리 끄기'}>
+        <SoundIcon muted={muted} />
       </button>
       <div className="wipe" ref={wipe} aria-hidden="true" />
     </main>

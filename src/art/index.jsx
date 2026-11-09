@@ -257,8 +257,26 @@ export function EnvFlap() {
 export function Seal() {
   return (
     <svg viewBox="-24 -24 48 48" className="env-seal" aria-hidden="true">
-      <circle className="ol" r="19" fill="#ffd84d" />
-      <g transform="scale(.55)"><Heart color="#ff5fa2" /></g>
+      <g className="seal-in">
+        <circle className="ol" r="19" fill="#ffd84d" />
+        <g transform="scale(.55)"><Heart color="#ff5fa2" /></g>
+      </g>
+    </svg>
+  )
+}
+
+export function SoundIcon({ muted }) {
+  return (
+    <svg viewBox="0 0 40 40" width="26" height="26" aria-hidden="true">
+      <path className="ol" strokeWidth="3.5" fill="#fff" d="M6 15 H12 L20 8 V32 L12 25 H6 Z" />
+      {muted ? (
+        <path d="M26 15 L36 25 M36 15 L26 25" stroke="#ff2f7f" strokeWidth="4" strokeLinecap="round" />
+      ) : (
+        <>
+          <path d="M26 14 Q30 20 26 26" stroke={INK} strokeWidth="3.5" fill="none" strokeLinecap="round" />
+          <path d="M30 9 Q38 20 30 31" stroke={INK} strokeWidth="3.5" fill="none" strokeLinecap="round" />
+        </>
+      )}
     </svg>
   )
 }

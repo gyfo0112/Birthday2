@@ -68,10 +68,13 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 
 .mute {
   position: absolute; right: 12px; top: calc(env(safe-area-inset-top) + 40px); z-index: 20;
-  width: 44px; height: 44px; font-size: 20px;
-  background: #fff; border: 3px solid var(--ink); border-radius: 50%; box-shadow: 0 3px 0 var(--ink);
+  width: 46px; height: 46px; display: grid; place-items: center;
+  background: var(--sun); border: 3px solid var(--ink); border-radius: 16px;
+  box-shadow: 3px 4px 0 var(--ink); rotate: 4deg;
+  transition: transform .1s, box-shadow .1s, background .15s;
 }
-.mute:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.mute.off { background: var(--pink); }
+.mute:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--ink); }
 
 /* ---------- 장면 공통 ---------- */
 .scene-host { position: absolute; inset: 0; z-index: 2; }
@@ -191,7 +194,8 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 .env-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; display: block; }
 .env-front { position: absolute; inset: 0; z-index: 2; }
 .env-flap { position: absolute; inset: 0; z-index: 3; transform-origin: 50% 2%; transform-style: preserve-3d; }
-.env-seal { position: absolute; left: 50%; top: 52%; width: 18%; translate: -50% -50%; z-index: 4; animation: pulse 1.4s ease-in-out infinite; }
+.env-seal { position: absolute; left: 41%; top: 38.7%; width: 18%; z-index: 4; overflow: visible; }
+.seal-in { transform-box: fill-box; transform-origin: center; animation: pulse 1.4s ease-in-out infinite; }
 
 .paper {
   position: relative; z-index: 1;

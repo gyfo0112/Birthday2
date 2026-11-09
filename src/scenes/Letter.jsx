@@ -31,7 +31,7 @@ export default function Letter({ go }) {
     sfx.tap(); haptic(20)
     const tl = gsap.timeline({ onComplete: () => setPhase('typing') })
     tl.to(env.current, { rotation: 0, y: 0, duration: 0.2 })
-      .to(env.current.querySelector('.env-seal'), { scale: 0, rotation: 90, duration: 0.25, ease: 'back.in(2)' }, '<')
+      .to(env.current.querySelector('.env-seal'), { scale: 0, rotation: 90, transformOrigin: '50% 50%', duration: 0.25, ease: 'back.in(2)' }, '<')
       .to(flap.current, { rotationX: 180, duration: 0.55, ease: 'power2.inOut' })
       .set(flap.current, { zIndex: 0 }, '-=0.3')
       .add(() => { sfx.pling(2); rain(1200) }, '-=0.1')
