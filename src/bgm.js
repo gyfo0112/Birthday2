@@ -15,6 +15,15 @@ const FADE_IN = 2 // 로딩 화면에서 서서히 커지는 시간(초)
 // WebAudio 게인 노드로 조절한다: <audio> -> Gain -> 리미터 -> 스피커
 let gain = null
 let started = false
+let target = 0 // 음소거가 아닐 때 내야 하는 크기 (페이드인/덕킹으로 바뀜)
+let muted = false
+
+// 현재 상태(target, muted)에 맞춰 게인을 맞춘다. 음소거면 0.
+function apply(sec) {
+  const v = muted ? 0 : target
+  if (gain) rampTo(v, sec)
+  else gsap.to(audio, { volume: Math.min(1, v), duration: sec })
+}
 
 function graph() {
   if (gain) return gain
@@ -64,10 +73,15 @@ export const bgm = {
   fadeIn() {
     if (!started) return
     this.ensure()
-    if (gain) rampTo(LEVEL, FADE_IN)
-    else gsap.to(audio, { volume: Math.min(1, LEVEL), duration: FADE_IN })
+    target = LEVEL
+    apply(FADE_IN)
   },
-  setMuted(m) { audio.muted = m },
+  // 음소거: 아이폰 사파리는 WebAudio를 거치면 audio.muted를 무시할 수 있어서, 게인을 0으로 내려서 끈다
+  setMuted(m) {
+    muted = m
+    audio.muted = m
+    apply(0.05)
+  },
   // 권한 팝업 때문에 iOS가 오디오를 멈췄으면 다시 재생 시도
   ensure() {
     if (!started) return
@@ -76,9 +90,8 @@ export const bgm = {
   },
   // 소원 빌 때 BGM을 줄였다가(true) 되돌림(false)
   duck(on) {
-    const v = on ? LEVEL * DUCK : LEVEL
-    if (gain) rampTo(v, 0.8)
-    else gsap.to(audio, { volume: Math.min(1, v), duration: 0.8 })
+    target = on ? LEVEL * DUCK : LEVEL
+    apply(0.8) // 음소거 중이면 계속 0으로 유지됨
   },
   // 확인용: 현재 BGM 크기
   level() { return gain ? gain.gain.value : audio.volume },
