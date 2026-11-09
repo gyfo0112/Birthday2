@@ -74,6 +74,9 @@ export default function CakeScene({ go, onCake }) {
   const [out, setOut] = useState(() => Array(config.candleCount).fill(false))
   const outRef = useRef(out)
   const placedRef = useRef([])
+  const alive = useRef(true)
+  // 뒤로가기 등으로 이 장면을 떠날 때 BGM 볼륨 복구, 남은 타이머가 장면을 넘기지 않게 함
+  useEffect(() => () => { alive.current = false; bgm.duck(0.55) }, [])
   placedRef.current = placed
   outRef.current = out
 
@@ -114,7 +117,7 @@ export default function CakeScene({ go, onCake }) {
     setPhase('done')
     sfx.win(); haptic([30, 50, 30, 50, 80])
     burst({ x: 0.5, y: 0.5 }); rain(2000)
-    setTimeout(() => go('letter'), 2600)
+    setTimeout(() => alive.current && go('letter'), 2600)
   }
 
   const blowOne = (i) => {
