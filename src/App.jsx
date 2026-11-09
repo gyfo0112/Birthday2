@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import Backdrop from './Backdrop.jsx'
 import Perm from './scenes/Perm.jsx'
 import Loader from './scenes/Loader.jsx'
+import Lock from './scenes/Lock.jsx'
 import Gift from './scenes/Gift.jsx'
 import Countdown from './scenes/Countdown.jsx'
 import CakeScene from './scenes/CakeScene.jsx'
@@ -13,8 +14,10 @@ import { bgm } from './bgm.js'
 import { sfx } from './sfx.js'
 import { haptic } from './fx.js'
 import { requestAll } from './perms.js'
+import { config } from './config.js'
+import { getBirthdayState, getNow } from './time.js'
 
-const SCENES = ['perm', 'loader', 'gift', 'count', 'cake', 'letter', 'end']
+const SCENES = ['perm', 'loader', 'lock', 'gift', 'count', 'cake', 'letter', 'end']
 
 export default function App() {
   const [scene, setScene] = useState('perm')
@@ -26,6 +29,7 @@ export default function App() {
   const [starting, setStarting] = useState(false)
   const pending = useRef(null)
   const current = useRef('perm')
+  const unlocked = useRef(false) // 잠금 화면에서 0시를 기다려 열렸다면 D-DAY 축하를 이미 했으므로 중간 D-DAY 장면은 건너뜀
 
   // 원형 와이프로 장면 전환 (전환 중에 들어온 요청은 끝난 뒤 이어서 처리)
   const runRef = useRef(null)
@@ -58,7 +62,9 @@ export default function App() {
   // 로딩이 끝나면 자동으로 선물상자로. 전환 중이면 잠깐 뒤 다시 시도
   const advance = useCallback(function tick() {
     if (busy.current) { setTimeout(tick, 250); return }
-    go('gift', undefined, true)
+    // 생일 0시 전이면 잠금 화면, 아니면 선물상자로
+    const locked = getBirthdayState(getNow(), config.birthday).mode === 'before'
+    go(locked ? 'lock' : 'gift', undefined, true)
   }, [go])
 
   useEffect(() => {
@@ -102,7 +108,8 @@ export default function App() {
       <div className="scene-host" key={round}>
         {scene === 'perm' && <Perm onAllow={() => begin(true)} onSkip={() => begin(false)} busy={starting} />}
         {scene === 'loader' && <Loader onDone={advance} />}
-        {scene === 'gift' && <Gift go={go} />}
+        {scene === 'lock' && <Lock onUnlocked={() => { unlocked.current = true }} onOpen={() => go('gift')} />}
+        {scene === 'gift' && <Gift go={go} skipCount={unlocked.current} />}
         {scene === 'count' && <Countdown go={go} />}
         {scene === 'cake' && <CakeScene go={go} onCake={setCake} />}
         {scene === 'letter' && <Letter go={go} />}

@@ -403,3 +403,17 @@ export function CakeStatic({ placed, count }) {
     </Cake>
   )
 }
+
+export function Padlock({ open = false, className = '' }) {
+  return (
+    <svg viewBox="0 0 60 72" className={`padlock ${open ? 'open' : ''} ${className}`} aria-hidden="true">
+      <g className="shackle">
+        <path d="M17 34 V23 a13 13 0 0 1 26 0 V34" fill="none" stroke={INK} strokeWidth="10" strokeLinecap="round" />
+        <path d="M17 34 V23 a13 13 0 0 1 26 0 V34" fill="none" stroke="#d9d9e6" strokeWidth="4" strokeLinecap="round" />
+      </g>
+      <rect className="ol" x="6" y="32" width="48" height="36" rx="9" fill="#ffd84d" />
+      <circle cx="30" cy="48" r="5.5" fill={INK} />
+      <rect x="28" y="50" width="4" height="11" rx="2" fill={INK} />
+    </svg>
+  )
+}

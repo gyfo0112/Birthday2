@@ -1,7 +1,7 @@
 // 이름·날짜·문구는 여기서만 수정하면 돼
 export const config = {
   name: '윤서',
-  birthday: { month: 11, day: 12 },
+  birthday: { year: 2026, month: 11, day: 12 }, // 이 날 0시에 잠금이 풀림
   marquee: 'HAPPY BIRTHDAY YUNSEO',
 
   // 로딩 화면 마스코트: public/ 폴더에 넣은 이미지 파일명. null이면 코드로 그린 기본 토끼
@@ -14,6 +14,14 @@ export const config = {
   permSkip: '허용 없이 시작',
   permBusy: '준비 중…',
   permNotice: '마이크와 모션을 허용하면 촛불을 후~ 불고, 폰을 흔들어 폭죽을 터뜨릴 수 있어요. 허용하지 않아도 끝까지 즐길 수 있어요!',
+
+  lockTitle: '아직 열 수 없어요',
+  lockOpensAt: (m, d) => `${m}월 ${d}일 0시에 열려요`,
+  lockHint: '0시에 이 화면을 열어두면 자동으로 열려요',
+  lockTeasers: ['아직이야~ 조금만 기다려!', '0시가 되면 열려요', '두근두근, 거의 다 왔어!', '쉿, 서프라이즈는 생일에!'],
+  unlockTitle: '자물쇠가 풀렸어요!',
+  unlockSub: (name) => `${name}야, 생일 축하해!`,
+  unlockButton: '열어보기',
 
   giftHint: '선물상자를 탭해서 열어봐!',
   giftTitle: '윤서야,\n생일 축하해!',

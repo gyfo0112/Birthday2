@@ -6,7 +6,7 @@ import { burst, haptic } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { useEnter } from '../hooks.js'
 
-export default function Gift({ go }) {
+export default function Gift({ go, skipCount = false }) {
   const ref = useEnter()
   const lid = useRef(null)
   const box = useRef(null)
@@ -53,7 +53,7 @@ export default function Gift({ go }) {
         {opened && (
           <div className="stack">
             <p className="sub pop-in">{config.giftSub}</p>
-            <button className="btn pop-in" style={{ animationDelay: '1.2s' }} onClick={() => go('count')}>다음 ▶</button>
+            <button className="btn pop-in" style={{ animationDelay: '1.2s' }} onClick={() => go(skipCount ? 'cake' : 'count')}>다음 ▶</button>
           </div>
         )}
       </div>
