@@ -4,6 +4,8 @@ export const config = {
   birthday: { month: 11, day: 12 },
   marquee: 'HAPPY BIRTHDAY YUNSEO',
 
+  // 로딩 화면 마스코트: public/ 폴더에 넣은 이미지 파일명(예: 'mascot.png'). null이면 기본 토끼
+  mascotImage: null,
   loaderTitle: '윤서에게 도착한\n선물 준비 중…',
   loaderButton: '열어보기',
 

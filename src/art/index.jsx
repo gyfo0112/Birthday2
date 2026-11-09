@@ -5,35 +5,38 @@ export const INK = '#3b1f3a'
 export function Mascot({ className = '' }) {
   return (
     <svg viewBox="0 0 200 200" className={className} aria-hidden="true">
-      <ellipse cx="100" cy="188" rx="46" ry="7" fill={INK} opacity=".18" />
+      <ellipse cx="100" cy="192" rx="50" ry="7" fill={INK} opacity=".18" />
+      {/* 귀 (살랑살랑) */}
+      <g className="ear ear-l">
+        <ellipse className="ol" cx="70" cy="50" rx="17" ry="45" fill="#fff6dc" transform="rotate(-9 70 50)" />
+        <ellipse cx="71" cy="56" rx="8" ry="27" fill="#ffb3d4" transform="rotate(-9 71 56)" />
+      </g>
+      <g className="ear ear-r">
+        <ellipse className="ol" cx="130" cy="50" rx="17" ry="45" fill="#fff6dc" transform="rotate(9 130 50)" />
+        <ellipse cx="129" cy="56" rx="8" ry="27" fill="#ffb3d4" transform="rotate(9 129 56)" />
+      </g>
       {/* 발 */}
-      <ellipse className="ol" cx="74" cy="174" rx="16" ry="10" fill="#ff7fb5" />
-      <ellipse className="ol" cx="126" cy="174" rx="16" ry="10" fill="#ff7fb5" />
+      <ellipse className="ol" cx="72" cy="184" rx="17" ry="9" fill="#fff6dc" />
+      <ellipse className="ol" cx="128" cy="184" rx="17" ry="9" fill="#fff6dc" />
       {/* 팔 */}
-      <ellipse className="ol" cx="30" cy="122" rx="13" ry="18" fill="#ff8fc0" transform="rotate(25 30 122)" />
-      <ellipse className="ol" cx="170" cy="122" rx="13" ry="18" fill="#ff8fc0" transform="rotate(-25 170 122)" />
+      <ellipse className="ol" cx="34" cy="138" rx="11" ry="16" fill="#fff6dc" transform="rotate(28 34 138)" />
+      <ellipse className="ol" cx="166" cy="138" rx="11" ry="16" fill="#fff6dc" transform="rotate(-28 166 138)" />
       {/* 몸 */}
       <path
         className="ol"
-        fill="#ff8fc0"
-        d="M100 52 C150 52 176 88 176 124 C176 160 144 180 100 180 C56 180 24 160 24 124 C24 88 50 52 100 52Z"
+        fill="#fff6dc"
+        d="M100 70 C150 70 170 102 170 132 C170 167 140 188 100 188 C60 188 30 167 30 132 C30 102 50 70 100 70Z"
       />
-      <ellipse cx="70" cy="86" rx="14" ry="7" fill="#fff" opacity=".55" transform="rotate(-25 70 86)" />
+      <ellipse cx="68" cy="94" rx="13" ry="6" fill="#fff" opacity=".7" transform="rotate(-25 68 94)" />
       {/* 얼굴 */}
-      <circle cx="74" cy="118" r="8" fill={INK} />
-      <circle cx="126" cy="118" r="8" fill={INK} />
-      <circle cx="77" cy="115" r="3" fill="#fff" />
-      <circle cx="129" cy="115" r="3" fill="#fff" />
-      <ellipse cx="56" cy="136" rx="11" ry="7" fill="#ff5fa2" opacity=".7" />
-      <ellipse cx="144" cy="136" rx="11" ry="7" fill="#ff5fa2" opacity=".7" />
-      <path className="ol" fill="#fff" d="M88 134 Q100 156 112 134 Z" />
-      {/* 고깔모자 */}
-      <g transform="rotate(-8 100 50)">
-        <path className="ol" fill="#ffd84d" d="M100 6 L68 62 Q100 72 132 62 Z" />
-        <path d="M82 38 L118 38" stroke="#ff5fa2" strokeWidth="6" strokeLinecap="round" />
-        <path d="M74 52 L126 52" stroke="#8fe3cf" strokeWidth="6" strokeLinecap="round" />
-        <circle className="ol" cx="100" cy="8" r="9" fill="#fff" />
-      </g>
+      <ellipse cx="70" cy="124" rx="6" ry="7" fill={INK} />
+      <ellipse cx="130" cy="124" rx="6" ry="7" fill={INK} />
+      <circle cx="72" cy="121" r="2.2" fill="#fff" />
+      <circle cx="132" cy="121" r="2.2" fill="#fff" />
+      <ellipse cx="50" cy="142" rx="11" ry="7" fill="#ff9ccc" opacity=".85" />
+      <ellipse cx="150" cy="142" rx="11" ry="7" fill="#ff9ccc" opacity=".85" />
+      <path className="ol" strokeWidth="3.5" fill="#8a2d4a" d="M80 134 Q100 172 120 134 Z" />
+      <path d="M90 156 Q100 146 110 156 Q100 164 90 156Z" fill="#ff8fa8" />
     </svg>
   )
 }

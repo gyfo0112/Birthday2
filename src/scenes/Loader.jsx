@@ -30,7 +30,11 @@ export default function Loader({ onStart }) {
 
   return (
     <section className="scene" ref={ref}>
-      <div data-in><Mascot className="mascot bounce" /></div>
+      <div data-in>
+        {config.mascotImage
+          ? <img className="mascot mascot-img bounce" src={`${import.meta.env.BASE_URL}${config.mascotImage}`} alt="" />
+          : <Mascot className="mascot bounce" />}
+      </div>
       <h1 className="title" data-in>{config.loaderTitle}</h1>
       <div className="bar sticker" data-in>
         <div className="bar-fill" style={{ width: `${pct}%` }} />
