@@ -9,6 +9,8 @@ export const config = {
   mascotHalo: true, // 마스코트 뒤에 흰 원 스티커
   loaderTitle: '윤서에게 도착한\n선물 준비 중…',
   loaderButton: '열어보기',
+  loaderBusy: '준비 중…',
+  permNotice: '마이크와 모션을 허용하면 촛불을 후~ 불고, 폰을 흔들어 폭죽을 터뜨릴 수 있어요. 허용하지 않아도 끝까지 즐길 수 있어요!',
 
   giftHint: '선물상자를 탭해서 열어봐!',
   giftTitle: '윤서야,\n생일 축하해!',

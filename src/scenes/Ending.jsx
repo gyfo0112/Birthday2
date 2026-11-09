@@ -6,6 +6,7 @@ import { burst, firework, fireworks, haptic } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { deliverCard, makeCardBlob } from '../saveCard.js'
 import { motionNeedsPermission, requestMotion, useShake } from '../useShake.js'
+import { perms } from '../perms.js'
 
 const COLORS = ['#fff', '#ffd84d', '#ff5fa2', '#8fe3cf', '#b58cff']
 
@@ -15,6 +16,9 @@ export default function Ending({ cake = [], onReplay }) {
   const [msg, setMsg] = useState('')
   // off: 데스크톱/미지원, ask: 아이폰(권한 필요), on: 바로 사용 가능, denied: 거부됨
   const [motion, setMotion] = useState(() => {
+    // 시작 화면에서 이미 물어봤다면 그 결과를 그대로 사용 (여기서 다시 묻지 않음)
+    if (perms.motion === 'granted') return 'on'
+    if (perms.motion === 'denied' || perms.motion === 'unsupported') return 'off'
     const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches
     if (!touch || typeof DeviceMotionEvent === 'undefined') return 'off'
     return motionNeedsPermission() ? 'ask' : 'on'

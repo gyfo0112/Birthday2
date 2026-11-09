@@ -11,6 +11,7 @@ import { SoundIcon } from './art/index.jsx'
 import { bgm } from './bgm.js'
 import { sfx } from './sfx.js'
 import { haptic } from './fx.js'
+import { requestAll } from './perms.js'
 
 const SCENES = ['loader', 'gift', 'count', 'cake', 'letter', 'end']
 
@@ -22,6 +23,7 @@ export default function App() {
   const wipe = useRef(null)
   const busy = useRef(false)
   const started = useRef(false)
+  const [starting, setStarting] = useState(false)
   const pending = useRef(null)
   const current = useRef('loader')
 
@@ -62,10 +64,18 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPop)
   }, [transition])
 
+  // 시작 화면의 탭 한 번으로: 소리 잠금 해제 + BGM + 마이크/모션 권한을 한꺼번에 요청
   const start = () => {
+    if (starting) return
     sfx.unlock(); sfx.tap(); haptic(15)
     if (!started.current) { started.current = true; bgm.start() }
-    go('gift')
+    setStarting(true)
+    const timeout = new Promise((r) => setTimeout(r, 30000)) // 팝업을 오래 방치해도 넘어가도록
+    Promise.race([requestAll(), timeout]).finally(() => {
+      bgm.ensure()
+      setStarting(false)
+      go('gift')
+    })
   }
 
   const replay = () => go('loader', () => { setCake([]); setRound((r) => r + 1) })
@@ -81,7 +91,7 @@ export default function App() {
     <main className="stage">
       <Backdrop />
       <div className="scene-host" key={round}>
-        {scene === 'loader' && <Loader onStart={start} />}
+        {scene === 'loader' && <Loader onStart={start} busy={starting} />}
         {scene === 'gift' && <Gift go={go} />}
         {scene === 'count' && <Countdown go={go} />}
         {scene === 'cake' && <CakeScene go={go} onCake={setCake} />}
