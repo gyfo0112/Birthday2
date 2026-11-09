@@ -6,6 +6,7 @@ import { config } from '../config.js'
 import { burst, haptic, rain, sparkle } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { useBlow } from '../useBlow.js'
+import { perms } from '../perms.js'
 import { useEnter } from '../hooks.js'
 
 const TYPES = Object.keys(TOPPINGS)
@@ -125,6 +126,7 @@ export default function CakeScene({ go, onCake }) {
   const endWish = () => {
     sfx.tap(); haptic(15)
     bgm.duck(0.55)
+    if (perms.mic === 'granted') start() // 시작 화면에서 허용해 둔 경우: 이 탭 안에서 바로 마이크 감지 시작
     setPhase('blow')
   }
 
@@ -207,9 +209,11 @@ export default function CakeScene({ go, onCake }) {
         {phase === 'blow' && (
           <div className="stack">
             {status === 'listening' && <p className="sub pulse">{config.micListening}</p>}
-            {(status === 'denied' || status === 'unsupported') && <p className="sub">{config.micFail}</p>}
+            {status !== 'listening' && (status === 'denied' || status === 'unsupported' || perms.mic === 'denied' || perms.mic === 'unsupported') && (
+              <p className="sub">{config.micFail}</p>
+            )}
             <div className="row">
-              {status === 'idle' && <button className="btn" onClick={start}>{config.micButton}</button>}
+              {status === 'idle' && perms.mic === 'unknown' && <button className="btn" onClick={start}>{config.micButton}</button>}
               <button className="btn ghost" onClick={blowAll}>{config.blowAllButton}</button>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { Mascot } from '../art/index.jsx'
 import { config } from '../config.js'
 import { useEnter } from '../hooks.js'
 
-export default function Loader({ onStart }) {
+export default function Loader({ onStart, busy }) {
   const ref = useEnter()
   const btn = useRef(null)
   const [pct, setPct] = useState(0)
@@ -47,9 +47,10 @@ export default function Loader({ onStart }) {
       </div>
       <div className="slot-h">
         {ready && (
-          <button ref={btn} className="btn" onClick={onStart}>{config.loaderButton}</button>
+          <button ref={btn} className="btn" onClick={onStart} disabled={busy}>{busy ? config.loaderBusy : config.loaderButton}</button>
         )}
       </div>
+      <p className="perm-note" data-in>{config.permNotice}</p>
     </section>
   )
 }

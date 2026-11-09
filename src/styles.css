@@ -287,3 +287,11 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 }
 .toast { margin: 0; padding: 6px 18px; font-size: 18px; background: #fff; border: 3px solid var(--ink); border-radius: 99px; box-shadow: 0 3px 0 var(--ink); }
 .toast-slot { min-height: 44px; display: flex; align-items: center; justify-content: center; margin: -6px 0; }
+
+/* ---------- 권한 안내 ---------- */
+.perm-note {
+  margin: 0; max-width: min(88vw, 340px); padding: 8px 14px;
+  font-size: 14px; line-height: 1.5; word-break: keep-all;
+  background: rgba(255, 255, 255, .78); border: 2.5px solid var(--ink); border-radius: 16px;
+}
+.btn:disabled { opacity: .75; pointer-events: none; }
