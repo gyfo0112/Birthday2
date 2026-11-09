@@ -1,13 +1,17 @@
 import confetti from 'canvas-confetti'
 
-const colors = ['#ff5fa2', '#ff9ccc', '#ffd84d', '#8fe3cf', '#ffffff', '#b58cff']
-const heart = confetti.shapeFromText({ text: '💗', scalar: 2 })
-const base = { colors, zIndex: 100, disableForReducedMotion: true }
+// 흰색은 핑크 배경 위에서 하얀 네모로 보여서 제외, 이모지 비트맵 대신 벡터 모양 사용
+const colors = ['#ff5fa2', '#ff3d8b', '#ffd84d', '#8fe3cf', '#b58cff', '#ff9a3d']
+const heart = confetti.shapeFromPath({
+  path: 'M167 72c19-38 37-56 75-56 42 0 76 33 76 75 0 76-76 151-151 227C89 242 14 167 14 91c0-42 34-75 76-75 38 0 57 18 77 56z',
+})
+const star = confetti.shapeFromPath({ path: 'M50 0 L61 35 L98 35 L68 57 L79 91 L50 70 L21 91 L32 57 L2 35 L39 35 Z' })
+const base = { colors, zIndex: 100, disableForReducedMotion: true, shapes: ['circle', star, heart] }
 const rand = (a, b) => a + Math.random() * (b - a)
 
 export const burst = (origin = { x: 0.5, y: 0.6 }) => {
   confetti({ ...base, particleCount: 90, spread: 80, startVelocity: 45, origin })
-  confetti({ ...base, particleCount: 24, spread: 100, startVelocity: 35, scalar: 2, shapes: [heart], origin })
+  confetti({ ...base, particleCount: 24, spread: 100, startVelocity: 35, scalar: 1.6, shapes: [heart], origin })
 }
 
 export const rain = (ms = 2200) => {
