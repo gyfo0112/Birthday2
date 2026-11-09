@@ -9,7 +9,7 @@ export const config = {
 
   giftHint: '선물상자를 탭해서 열어봐!',
   giftTitle: '윤서야,\n생일 축하해!',
-  giftSub: '너를 위해 준비했어 💗',
+  giftSub: '너를 위해 준비했어',
 
   candleCount: 3,
   decorateHint: '토핑을 탭해서 케이크를 꾸며줘!',

@@ -55,7 +55,7 @@ export default function Countdown({ go }) {
         </div>
       )}
       <p className="sub" data-in>{foot}</p>
-      <button className="btn" data-in onClick={() => go('cake')}>케이크 만들러 가기</button>
+      <button className="btn" data-in onClick={() => go('cake')}>케이크 만들러 가기 ▶</button>
     </section>
   )
 }
