@@ -98,7 +98,7 @@ export default function CakeScene({ go, onCake }) {
   placedRef.current = placed
   outRef.current = out
 
-  const { status, start, stop } = useBlow(() => blowAll())
+  const { status, gauge, start, stop } = useBlow(() => blowAll())
 
   const add = (type) => {
     if (phase !== 'decorate' || placed.length >= SLOTS.length) return
@@ -208,7 +208,14 @@ export default function CakeScene({ go, onCake }) {
         )}
         {phase === 'blow' && (
           <div className="stack">
-            {status === 'listening' && <p className="sub pulse">{config.micListening}</p>}
+            {status === 'listening' && (
+              <>
+                <p className="sub pulse">{gauge.ready ? config.micListening : config.micCalibrating}</p>
+                <div className="gauge sticker" aria-hidden="true">
+                  <div className="gauge-fill" style={{ width: `${Math.round(gauge.charge * 100)}%` }} />
+                </div>
+              </>
+            )}
             {status !== 'listening' && (status === 'denied' || status === 'unsupported' || perms.mic === 'denied' || perms.mic === 'unsupported') && (
               <p className="sub">{config.micFail}</p>
             )}

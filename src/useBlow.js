@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createBlowDetector } from './blowDetector.js'
 
-// 마이크 입력의 저주파 에너지가 일정 시간 이상 크게 유지되면 "후~" 로 판단
-const THRESHOLD = 0.35 // 0~1, 낮을수록 민감
-const HOLD_MS = 350
+const GAUGE_EVERY_MS = 70 // 게이지 화면 갱신 주기 (너무 자주 리렌더하지 않도록)
 
+// 마이크로 "후~" 를 감지한다. gauge: { ready, charge(0~1) } 를 화면에 보여줄 수 있다.
 export function useBlow(onBlow) {
   const [status, setStatus] = useState('idle') // idle | listening | denied | unsupported
+  const [gauge, setGauge] = useState({ ready: false, charge: 0 })
   const cleanup = useRef(() => {})
   const cb = useRef(onBlow)
   cb.current = onBlow
@@ -27,25 +28,38 @@ export function useBlow(onBlow) {
       })
       if (ctx.state === 'suspended') ctx.resume?.()
       const analyser = ctx.createAnalyser()
-      analyser.fftSize = 512
+      analyser.fftSize = 1024
+      analyser.smoothingTimeConstant = 0.55
       ctx.createMediaStreamSource(stream).connect(analyser)
       const data = new Uint8Array(analyser.frequencyBinCount)
-      let loudSince = 0
+
+      // 입김(바람 소리)은 약 80Hz~1.2kHz 대역에 에너지가 몰림
+      const binHz = ctx.sampleRate / analyser.fftSize
+      const i0 = Math.max(1, Math.ceil(80 / binHz))
+      const i1 = Math.max(i0 + 1, Math.floor(1200 / binHz))
+
+      const det = createBlowDetector()
       let raf = 0
+      let last = performance.now()
+      let lastUi = 0
 
       const tick = () => {
-        analyser.getByteFrequencyData(data)
-        // 입김은 낮은 대역(약 0~1.5kHz)에 에너지가 몰림
-        const bins = Math.max(1, Math.floor(data.length * 0.15))
-        let sum = 0
-        for (let i = 0; i < bins; i++) sum += data[i]
-        const level = sum / bins / 255
         const now = performance.now()
-        if (level > THRESHOLD) {
-          loudSince ||= now
-          if (now - loudSince > HOLD_MS) return cb.current()
-        } else {
-          loudSince = 0
+        const dt = Math.min(100, now - last)
+        last = now
+        analyser.getByteFrequencyData(data)
+        let sum = 0
+        for (let i = i0; i <= i1; i++) sum += data[i]
+        const level = sum / (i1 - i0 + 1) / 255
+
+        const r = det.push(level, dt)
+        if (now - lastUi > GAUGE_EVERY_MS) {
+          lastUi = now
+          setGauge({ ready: r.ready, charge: r.charge })
+        }
+        if (r.triggered) {
+          setGauge({ ready: true, charge: 1 })
+          return cb.current()
         }
         raf = requestAnimationFrame(tick)
       }
@@ -65,5 +79,5 @@ export function useBlow(onBlow) {
 
   useEffect(() => stop, [stop])
 
-  return { status, start, stop }
+  return { status, gauge, start, stop }
 }
