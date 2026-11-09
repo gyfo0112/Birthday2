@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { CandleShape, Cake, CANDLE_BASE_Y, SLOTS, TOPPINGS, ToppingIcon, candleX } from '../art/index.jsx'
+import { CandleShape, Cake, CANDLE_BASE_Y, SLOTS, SignBoard, TOPPINGS, ToppingIcon, candleX } from '../art/index.jsx'
 import { config } from '../config.js'
 import { burst, haptic, rain } from '../fx.js'
 import { sfx } from '../sfx.js'
@@ -18,9 +18,20 @@ function Topping({ type, slot }) {
   }, [])
   return (
     <g transform={`translate(${SLOTS[slot][0]} ${SLOTS[slot][1]})`}>
-      <g ref={g}><T /></g>
+      <g ref={g}><g transform="scale(.85)"><T /></g></g>
     </g>
   )
+}
+
+// 케이크가 완성되면 팻말이 위에서 툭 떨어져 꽂힘
+function Sign({ name }) {
+  const g = useRef(null)
+  useLayoutEffect(() => {
+    const tw = gsap.from(g.current, { y: -280, rotation: -14, opacity: 0, duration: 0.95, delay: 0.25, ease: 'bounce.out' })
+    const t = setTimeout(() => { sfx.drop(); haptic(12) }, 250 + 330)
+    return () => { tw.kill(); clearTimeout(t) }
+  }, [])
+  return <g ref={g}><SignBoard name={name} /></g>
 }
 
 function Candle({ x, i, out, onTap }) {
@@ -116,8 +127,9 @@ export default function CakeScene({ go }) {
 
       <div className="cake-wrap" data-in>
         <div ref={cake} className="cake-inner">
-          <Cake label={config.name}>
+          <Cake>
             {placed.map((p) => <Topping key={p.id} type={p.type} slot={p.slot} />)}
+            {lit && <Sign name={config.name} />}
             {lit && out.map((o, i) => (
               <Candle key={i} i={i} x={candleX(i, config.candleCount)} out={o} onTap={() => blowOne(i)} />
             ))}

@@ -157,18 +157,101 @@ function Macaron() {
   )
 }
 
+function Cookie() {
+  return (
+    <g>
+      <circle className="ol" r="17" fill="#e8b27a" />
+      {[[-6, -7, 3], [7, -3, 3], [-2, 7, 3], [9, 9, 2.4], [-11, 4, 2.4]].map(([x, y, r], i) => (
+        <circle key={i} cx={x} cy={y} r={r} fill="#6b3f26" />
+      ))}
+    </g>
+  )
+}
+function Donut() {
+  return (
+    <g>
+      <circle className="ol" r="19" fill="#ffc78e" />
+      <circle className="ol" r="15" fill="#ff7fb5" />
+      <circle className="ol" r="5.5" fill="#ffd6e8" />
+      {[[-9, -6, 20], [8, -8, -30], [10, 6, 50], [-3, 11, 80], [-11, 5, 10]].map(([x, y, r], i) => (
+        <rect key={i} x={x - 3} y={y - 1} width="6" height="2.6" rx="1.3" transform={`rotate(${r} ${x} ${y})`} fill={['#ffd84d', '#8fe3cf', '#fff', '#b58cff', '#ffd84d'][i]} />
+      ))}
+    </g>
+  )
+}
+function Lollipop() {
+  return (
+    <g>
+      <rect className="ol" x="-2.5" y="4" width="5" height="19" rx="2" fill="#fff" />
+      <circle className="ol" cx="0" cy="-7" r="14" fill="#ff9ccc" />
+      <path d="M0 -7 m-2 0 a2 2 0 1 1 4 0 a5 5 0 1 1 -9 0 a8 8 0 1 1 14 0" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+    </g>
+  )
+}
+function Flower() {
+  return (
+    <g>
+      {[0, 72, 144, 216, 288].map((a) => (
+        <circle key={a} className="ol" strokeWidth="3" cx="0" cy="-11" r="8" fill="#fff" transform={`rotate(${a})`} />
+      ))}
+      <circle className="ol" strokeWidth="3" r="6.5" fill="#ffd84d" />
+    </g>
+  )
+}
+function Bow() {
+  return (
+    <g>
+      <path className="ol" fill="#b58cff" d="M-2 14 L-10 22 L-12 12 Z" />
+      <path className="ol" fill="#b58cff" d="M2 14 L10 22 L12 12 Z" />
+      <path className="ol" fill="#b58cff" d="M0 0 C-10 -16 -24 -10 -21 0 C-24 10 -10 16 0 0Z" />
+      <path className="ol" fill="#b58cff" d="M0 0 C10 -16 24 -10 21 0 C24 10 10 16 0 0Z" />
+      <circle className="ol" r="5" fill="#d9c2ff" />
+    </g>
+  )
+}
+function Blueberry() {
+  return (
+    <g>
+      {[[-8, 6], [8, 7], [0, -8]].map(([x, y], i) => (
+        <g key={i}>
+          <circle className="ol" cx={x} cy={y} r="10" fill="#6d7bff" />
+          <circle cx={x - 3} cy={y - 3} r="2.4" fill="#fff" opacity=".6" />
+          <path d={`M${x - 3} ${y + 1} L${x} ${y + 4} L${x + 3} ${y + 1}`} stroke="#3a3f99" strokeWidth="2" fill="none" strokeLinecap="round" />
+        </g>
+      ))}
+    </g>
+  )
+}
+function Candy() {
+  return (
+    <g>
+      <path className="ol" fill="#ff9ccc" d="M-9 0 L-21 -10 L-21 10 Z" />
+      <path className="ol" fill="#ff9ccc" d="M9 0 L21 -10 L21 10 Z" />
+      <ellipse className="ol" rx="12" ry="10" fill="#8fe3cf" />
+      <path d="M-4 -9 L-7 9 M4 -9 L1 9" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity=".8" />
+    </g>
+  )
+}
+
 export const TOPPINGS = {
   strawberry: Strawberry,
   cherry: Cherry,
   star: Star,
   heart: Heart,
   macaron: Macaron,
+  cookie: Cookie,
+  donut: Donut,
+  lollipop: Lollipop,
+  flower: Flower,
+  bow: Bow,
+  blueberry: Blueberry,
+  candy: Candy,
 }
 
-export function ToppingIcon({ type, size = 54 }) {
+export function ToppingIcon({ type }) {
   const T = TOPPINGS[type]
   return (
-    <svg viewBox="-24 -24 48 48" width={size} height={size} aria-hidden="true">
+    <svg viewBox="-24 -24 48 48" className="tray-icon" aria-hidden="true">
       <T />
     </svg>
   )
@@ -184,12 +267,13 @@ function frost(x0, x1, ty, n, drip) {
 
 // 토핑이 놓일 자리 (viewBox 좌표)
 export const SLOTS = [
-  [118, 152], [160, 152], [202, 152],
-  [80, 234], [160, 234], [240, 234],
+  [160, 224], [115, 224], [205, 224], [70, 224], [250, 224],
+  [160, 150], [112, 150], [208, 150],
+  [92, 84], [228, 84],
 ]
 export const CANDLE_BASE_Y = 100
 
-export function Cake({ children, svgRef, label }) {
+export function Cake({ children, svgRef }) {
   return (
     <svg ref={svgRef} viewBox="0 0 320 316" className="cake-svg" aria-hidden="true">
       <defs>
@@ -206,12 +290,6 @@ export function Cake({ children, svgRef, label }) {
       <rect x="75" y="100" width="170" height="72" rx="18" fill="#fff0f6" />
       <g clipPath="url(#clipTop)"><path className="ol" fill="#ff7fb5" d={frost(75, 245, 100, 6, 22)} /></g>
       <rect className="ol" x="75" y="100" width="170" height="72" rx="18" fill="none" />
-      {label && (
-        <g transform="rotate(-2 160 282)">
-          <rect className="ol" x="110" y="266" width="100" height="32" rx="11" fill="#ffd84d" />
-          <text x="160" y="289" textAnchor="middle" className="cake-label">{label}</text>
-        </g>
-      )}
       {children}
     </svg>
   )
@@ -284,5 +362,20 @@ export function SoundIcon({ muted }) {
         </>
       )}
     </svg>
+  )
+}
+
+// 나무 팻말 (접시 왼쪽 앞에 꽂힘)
+export function SignBoard({ name }) {
+  return (
+    <g transform="translate(68 268) rotate(-5)">
+      <rect className="ol" x="-4.5" y="14" width="9" height="30" rx="2" fill="#e9b97f" />
+      <rect className="ol" x="-42" y="-16" width="84" height="32" rx="7" fill="#ffe2b8" />
+      <path d="M-34 -8 H-14 M16 9 H34 M-30 9 H-12" stroke="#e5b07a" strokeWidth="2" strokeLinecap="round" />
+      {[[-35, -9], [35, -9], [-35, 9], [35, 9]].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="2.2" fill="#b57a45" />
+      ))}
+      <text x="0" y="7" textAnchor="middle" className="cake-label">{name}</text>
+    </g>
   )
 }
