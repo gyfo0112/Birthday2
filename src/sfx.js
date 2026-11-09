@@ -1,16 +1,12 @@
 // 외부 파일 없이 WebAudio로 만든 효과음
-let ctx
+import { getCtx, resumeCtx } from './audioCtx.js'
+
 let muted = false
 
 function ac() {
   if (muted) return null
-  if (!ctx) {
-    const C = window.AudioContext || window.webkitAudioContext
-    if (!C) return null
-    ctx = new C()
-  }
-  if (ctx.state === 'suspended') ctx.resume()
-  return ctx
+  if (!getCtx()) return null
+  return resumeCtx()
 }
 
 function tone({ freq, to, dur = 0.12, type = 'sine', vol = 0.18, delay = 0 }) {
