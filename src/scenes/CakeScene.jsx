@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { bgm } from '../bgm.js'
 import { CandleShape, Cake, StarShape, CANDLE_BASE_Y, SLOTS, SignBoard, TOPPINGS, ToppingIcon, candleX } from '../art/index.jsx'
 import { config } from '../config.js'
-import { burst, haptic, rain } from '../fx.js'
+import { burst, haptic, rain, sparkle } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { useBlow } from '../useBlow.js'
 import { useEnter } from '../hooks.js'
@@ -12,14 +12,31 @@ const TYPES = Object.keys(TOPPINGS)
 
 function Topping({ type, slot }) {
   const g = useRef(null)
+  const hop = useRef(null)
   const T = TOPPINGS[type]
   useLayoutEffect(() => {
     const tw = gsap.from(g.current, { y: -170, scale: 0.3, rotation: -50, opacity: 0, duration: 0.8, ease: 'bounce.out' })
     return () => tw.kill()
   }, [])
+
+  // 탭하면 통통 뛰고 반짝임이 퍼짐
+  const poke = () => {
+    gsap.killTweensOf(hop.current)
+    gsap.fromTo(hop.current, { y: 0, rotation: 0 }, { y: -20, rotation: gsap.utils.random(-18, 18), duration: 0.16, yoyo: true, repeat: 1, ease: 'power2.out' })
+    const r = g.current.getBoundingClientRect()
+    sparkle({ x: (r.left + r.width / 2) / window.innerWidth, y: (r.top + r.height / 2) / window.innerHeight })
+    sfx.pling(Math.floor(Math.random() * 5))
+    haptic(8)
+  }
+
   return (
-    <g transform={`translate(${SLOTS[slot][0]} ${SLOTS[slot][1]})`}>
-      <g ref={g}><g transform="scale(.85)"><T /></g></g>
+    <g transform={`translate(${SLOTS[slot][0]} ${SLOTS[slot][1]})`} className="topping" onClick={poke}>
+      <g ref={hop}>
+        <g ref={g}>
+          <rect x="-24" y="-24" width="48" height="48" fill="transparent" />
+          <g transform="scale(.85)"><T /></g>
+        </g>
+      </g>
     </g>
   )
 }

@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { SunBurst } from '../art/index.jsx'
 import { config } from '../config.js'
 import { burst, firework, fireworks, haptic } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { deliverCard, makeCardBlob } from '../saveCard.js'
+import { motionNeedsPermission, requestMotion, useShake } from '../useShake.js'
 
 const COLORS = ['#fff', '#ffd84d', '#ff5fa2', '#8fe3cf', '#b58cff']
 
@@ -12,6 +13,16 @@ export default function Ending({ cake = [], onReplay }) {
   const root = useRef(null)
   const blobP = useRef(null)
   const [msg, setMsg] = useState('')
+  // off: 데스크톱/미지원, ask: 아이폰(권한 필요), on: 바로 사용 가능, denied: 거부됨
+  const [motion, setMotion] = useState(() => {
+    const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches
+    if (!touch || typeof DeviceMotionEvent === 'undefined') return 'off'
+    return motionNeedsPermission() ? 'ask' : 'on'
+  })
+  const enableShake = () => {
+    sfx.tap()
+    requestMotion().then((r) => setMotion(r === 'granted' ? 'on' : 'denied'))
+  }
 
   // 공유 시트는 버튼 탭 직후에만 열 수 있어서(iOS) 이미지를 미리 만들어 둔다
   useEffect(() => {
@@ -50,7 +61,8 @@ export default function Ending({ cake = [], onReplay }) {
     return () => { clearTimeout(t); stop() }
   }, [])
 
-  const again = () => { firework(); firework(); burst(); sfx.boom(); haptic([30, 40, 30]) }
+  const again = useCallback(() => { firework(); firework(); burst(); sfx.boom(); haptic([30, 40, 30]) }, [])
+  useShake(motion === 'on', again)
 
   return (
     <section className="scene" ref={root}>
@@ -66,10 +78,12 @@ export default function Ending({ cake = [], onReplay }) {
       </div>
       <p className="end-name" data-in>{config.name}야 💗</p>
       <p className="sub" data-in>{config.endSub}</p>
+      {motion === 'on' && <p className="sub pulse" data-in>{config.shakeHint}</p>}
       <div className="toast-slot">{msg && <p className="toast pop-in">{msg}</p>}</div>
       <div className="row" data-in>
         <button className="btn" onClick={again}>{config.againButton}</button>
         <button className="btn mint" onClick={save}>{config.saveButton}</button>
+        {motion === 'ask' && <button className="btn ghost" onClick={enableShake}>{config.shakeButton}</button>}
         <button className="btn ghost" onClick={onReplay}>{config.replayButton}</button>
       </div>
     </section>

@@ -42,6 +42,8 @@ export const config = {
   endTitle: ['HAPPY', 'BIRTHDAY'],
   endSub: '윤서야, 오늘 하루 제일 행복하길!',
   againButton: '🎆 폭죽 한 번 더',
+  shakeHint: '📱 폰을 흔들어봐!',
+  shakeButton: '📱 흔들기 켜기',
   saveButton: '📷 케이크 저장',
   saveBusy: '만드는 중…',
   saveDone: '저장했어!',

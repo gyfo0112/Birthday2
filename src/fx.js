@@ -37,3 +37,10 @@ export function fireworks(interval = 800) {
 export const haptic = (p = 15) => {
   try { navigator.vibrate?.(p) } catch { /* ignore */ }
 }
+
+// 토핑 탭 등 작은 반짝임 (화면 좌표 -> 0~1 비율로 변환해서 사용)
+export const sparkle = (origin) =>
+  confetti({
+    ...base, particleCount: 12, spread: 70, startVelocity: 20, gravity: 0.7,
+    scalar: 0.8, ticks: 45, origin, shapes: ['circle', star],
+  })
