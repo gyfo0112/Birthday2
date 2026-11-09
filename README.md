@@ -24,6 +24,9 @@
 - 0시 직전(자물쇠 풀리는 연출): `?now=2026-11-11T23:59:46&key=yunseo-preview`
 - 당일: `?now=2026-11-12&key=yunseo-preview`
 - 지난 뒤: `?now=2026-11-20&key=yunseo-preview`
+- 폰에 저장된 "잠금을 봤다/풀림 연출을 봤다" 표시 지우기: 주소에 `reset=1&key=yunseo-preview` 추가
+
+잠금 화면을 본 적이 있는 사람이 생일 0시 이후에 다시 열면 자물쇠 풀리는 연출을 **한 번만** 보여준다 (브라우저 localStorage에 표시를 저장).
 
 ## 개발
 ```bash

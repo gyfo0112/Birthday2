@@ -6,18 +6,21 @@ import { getBirthdayState, getNow, remaining } from '../time.js'
 import { burst, haptic, rain } from '../fx.js'
 import { sfx } from '../sfx.js'
 import { useEnter } from '../hooks.js'
+import { markLockSeen, markUnlockShown } from '../lockState.js'
 
 const pad = (n) => String(n).padStart(2, '0')
 
 // 생일 0시 전까지 보여주는 잠금 화면. 0시가 되면 자물쇠가 풀리며 축하 연출 후 "열어보기" 버튼이 나타난다.
-export default function Lock({ onUnlocked, onOpen }) {
+export default function Lock({ onUnlocked, onOpen, ceremony = false }) {
   const ref = useEnter()
   const box = useRef(null)
   const [now, setNow] = useState(getNow)
   const st = getBirthdayState(now, config.birthday)
   const locked = st.mode === 'before'
-  const startedLocked = useRef(locked) // 처음부터 풀려 있던 경우(뒤로가기로 돌아옴)에는 축하 연출 생략
-  const [view, setView] = useState(locked ? 'locked' : 'unlocked') // locked | opening | unlocked
+  // ceremony: 예전에 잠긴 걸 봤던 사람이 0시 이후에 다시 열었을 때 자물쇠 풀리는 연출을 (한 번만) 보여줌
+  const ceremonyOnce = useRef(ceremony && !locked)
+  const [view, setView] = useState(locked ? 'locked' : ceremonyOnce.current ? 'opening' : 'unlocked') // locked | opening | unlocked
+  const [padOpen, setPadOpen] = useState(false)
   const [tease, setTease] = useState(-1)
 
   useEffect(() => {
@@ -28,22 +31,39 @@ export default function Lock({ onUnlocked, onOpen }) {
   const onUnlockedRef = useRef(onUnlocked)
   onUnlockedRef.current = onUnlocked
 
-  // 0시가 되는 순간: 자물쇠가 풀리는 연출 시작
-  useEffect(() => {
-    if (locked || view !== 'locked') return
-    setView('opening')
+  // 잠긴 화면을 보여줄 때마다 "잠금을 봤다"고 기억
+  useEffect(() => { if (locked) markLockSeen() }, [locked])
+
+  // 자물쇠가 풀리는 연출 (폭죽, 소리, 진동)
+  const celebrate = () => {
+    setPadOpen(true)
+    markUnlockShown()
     onUnlockedRef.current?.()
     sfx.win(); haptic([30, 50, 30, 50, 80])
     burst({ x: 0.5, y: 0.4 }); rain(2200)
     gsap.fromTo(box.current, { rotation: -6 }, { rotation: 0, duration: 0.9, ease: 'elastic.out(1,.3)' })
+  }
+
+  // (1) 0시를 화면 앞에서 기다리다가 풀리는 순간
+  useEffect(() => {
+    if (locked || view !== 'locked') return
+    setView('opening')
+    celebrate()
   }, [locked, view])
 
-  // 연출을 잠깐 보여준 뒤 "열어보기" 화면으로 (위 효과와 분리해야 상태가 바뀌어도 타이머가 지워지지 않음)
+  // (2) 0시 이후에 다시 열었을 때: 닫힌 자물쇠를 잠깐 보여준 뒤 풀림
   useEffect(() => {
-    if (view !== 'opening') return
+    if (!ceremonyOnce.current) return
+    const t = setTimeout(celebrate, 700)
+    return () => clearTimeout(t)
+  }, [])
+
+  // 자물쇠가 풀린 뒤 연출을 잠깐 보여주고 "열어보기" 화면으로 (위 효과들과 분리해야 상태가 바뀌어도 타이머가 지워지지 않음)
+  useEffect(() => {
+    if (!padOpen) return
     const t = setTimeout(() => setView('unlocked'), 1800)
     return () => clearTimeout(t)
-  }, [view])
+  }, [padOpen])
 
   // 잠긴 선물상자를 탭하면 흔들리며 맛보기 문구
   const poke = () => {
@@ -74,13 +94,13 @@ export default function Lock({ onUnlocked, onOpen }) {
 
   return (
     <section className="scene" ref={ref}>
-      <h1 className="title sm" data-in>{view === 'opening' ? config.unlockTitle : config.lockTitle}</h1>
+      <h1 className="title sm" data-in>{padOpen ? config.unlockTitle : config.lockTitle}</h1>
       <div className="pill sticker" data-in>{config.lockOpensAt(st.target.getMonth() + 1, st.target.getDate())}</div>
       <div className="gift-stage lock-gift" data-in>
         <button className="gift-btn" ref={box} onClick={poke} aria-label="선물상자">
           <GiftBox />
         </button>
-        <Padlock open={view === 'opening'} />
+        <Padlock open={padOpen} />
       </div>
       <div className="lock-count sticker" data-in>
         <span className="lock-d">{locked ? `D-${st.days}` : 'D-DAY'}</span>

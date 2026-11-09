@@ -16,6 +16,7 @@ import { haptic } from './fx.js'
 import { requestAll } from './perms.js'
 import { config } from './config.js'
 import { getBirthdayState, getNow } from './time.js'
+import { needsUnlockCeremony } from './lockState.js'
 
 const SCENES = ['perm', 'loader', 'lock', 'gift', 'count', 'cake', 'letter', 'end']
 
@@ -62,9 +63,10 @@ export default function App() {
   // 로딩이 끝나면 자동으로 선물상자로. 전환 중이면 잠깐 뒤 다시 시도
   const advance = useCallback(function tick() {
     if (busy.current) { setTimeout(tick, 250); return }
-    // 생일 0시 전이면 잠금 화면, 아니면 선물상자로
+    // 생일 0시 전이면 잠금 화면.
+    // 0시 이후인데 예전에 잠긴 걸 봤고 풀리는 연출은 아직 못 봤다면 그 연출(한 번만), 아니면 선물상자로
     const locked = getBirthdayState(getNow(), config.birthday).mode === 'before'
-    go(locked ? 'lock' : 'gift', undefined, true)
+    go(locked || needsUnlockCeremony() ? 'lock' : 'gift', undefined, true)
   }, [go])
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export default function App() {
       <div className="scene-host" key={round}>
         {scene === 'perm' && <Perm onAllow={() => begin(true)} onSkip={() => begin(false)} busy={starting} />}
         {scene === 'loader' && <Loader onDone={advance} />}
-        {scene === 'lock' && <Lock onUnlocked={() => { unlocked.current = true }} onOpen={() => go('gift')} />}
+        {scene === 'lock' && <Lock ceremony={needsUnlockCeremony()} onUnlocked={() => { unlocked.current = true }} onOpen={() => go('gift')} />}
         {scene === 'gift' && <Gift go={go} skipCount={unlocked.current} />}
         {scene === 'count' && <Countdown go={go} />}
         {scene === 'cake' && <CakeScene go={go} onCake={setCake} />}
