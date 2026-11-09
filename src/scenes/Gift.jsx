@@ -53,7 +53,7 @@ export default function Gift({ go }) {
         {opened && (
           <div className="stack">
             <p className="sub pop-in">{config.giftSub}</p>
-            <button className="btn pop-in" style={{ animationDelay: '1.2s' }} onClick={() => go('count')}>다음 ▶</button>
+            <button className="btn pop-in" style={{ animationDelay: '1.2s' }} onClick={() => go('count')}>다음</button>
           </div>
         )}
       </div>
