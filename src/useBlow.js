@@ -16,13 +16,16 @@ export function useBlow(onBlow) {
   }, [])
 
   const start = useCallback(async () => {
-    if (!navigator.mediaDevices?.getUserMedia) return setStatus('unsupported')
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!navigator.mediaDevices?.getUserMedia || !AC) return setStatus('unsupported')
+    // iOS 사파리: AudioContext는 탭 제스처 안(await 이전)에서 만들고 resume 해야 소리/분석이 동작함
+    const ctx = new AC()
+    ctx.resume?.()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
       })
-      const ctx = new (window.AudioContext || window.webkitAudioContext)()
-      await ctx.resume()
+      if (ctx.state === 'suspended') ctx.resume?.()
       const analyser = ctx.createAnalyser()
       analyser.fftSize = 512
       ctx.createMediaStreamSource(stream).connect(analyser)
@@ -55,6 +58,7 @@ export function useBlow(onBlow) {
       }
       setStatus('listening')
     } catch {
+      ctx.close?.()
       setStatus('denied')
     }
   }, [])

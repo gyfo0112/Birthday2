@@ -269,7 +269,6 @@ function frost(x0, x1, ty, n, drip) {
 export const SLOTS = [
   [160, 224], [115, 224], [205, 224], [70, 224], [250, 224],
   [160, 150], [112, 150], [208, 150],
-  [92, 84], [228, 84],
 ]
 export const CANDLE_BASE_Y = 100
 
