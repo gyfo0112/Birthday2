@@ -8,8 +8,11 @@ export const config = {
   mascotImage: 'mascot.png', // 핑크빛 흰 몸 버전을 쓰려면 'mascot-pink.png'
   mascotHalo: true, // 마스코트 뒤에 흰 원 스티커
   loaderTitle: '윤서에게 도착한\n선물 준비 중…',
-  loaderButton: '열어보기',
-  loaderBusy: '준비 중…',
+  permTitle: '선물을 열기 전에',
+  permChips: ['🎤 촛불 후~ 불기', '📱 폰 흔들어 폭죽'],
+  permAllow: '허용하고 시작',
+  permSkip: '허용 없이 시작',
+  permBusy: '준비 중…',
   permNotice: '마이크와 모션을 허용하면 촛불을 후~ 불고, 폰을 흔들어 폭죽을 터뜨릴 수 있어요. 허용하지 않아도 끝까지 즐길 수 있어요!',
 
   giftHint: '선물상자를 탭해서 열어봐!',
@@ -22,6 +25,7 @@ export const config = {
   lightingText: '촛불 켜는 중…',
   blowHint: '소원을 빌고 촛불을 꺼봐!',
   micButton: '🎤 후~ 불어서 끄기',
+  micCalibrating: '🎤 주변 소리를 듣는 중…',
   micListening: '🎤 후~ 하고 불어봐!',
   micFail: '마이크를 쓸 수 없어서 촛불을 직접 탭해서 꺼줘!',
   blowAllButton: '한 번에 끄기',

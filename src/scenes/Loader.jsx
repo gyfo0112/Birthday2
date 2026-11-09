@@ -1,56 +1,39 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import gsap from 'gsap'
-import { Mascot } from '../art/index.jsx'
+import MascotBlock from '../MascotBlock.jsx'
 import { config } from '../config.js'
 import { useEnter } from '../hooks.js'
 
-export default function Loader({ onStart, busy }) {
+// 진행바가 다 차면 버튼 없이 자동으로 다음 장면으로 넘어간다 (탭은 앞의 권한 화면에서 이미 받음)
+export default function Loader({ onDone }) {
   const ref = useEnter()
-  const btn = useRef(null)
   const [pct, setPct] = useState(0)
-  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const o = { v: 0 }
     let alive = true
+    let timer = 0
     const tw = gsap.to(o, {
       v: 100, duration: 2.2, ease: 'power1.inOut',
       onUpdate: () => setPct(Math.round(o.v)),
       onComplete: () => {
         const fonts = document.fonts?.ready ?? Promise.resolve()
-        Promise.race([fonts, new Promise((r) => setTimeout(r, 1500))]).then(() => alive && setReady(true))
+        Promise.race([fonts, new Promise((r) => setTimeout(r, 1500))]).then(() => {
+          if (alive) timer = setTimeout(() => alive && onDone(), 450) // 100%를 잠깐 보여준 뒤 이동
+        })
       },
     })
-    return () => { alive = false; tw.kill() }
-  }, [])
-
-  useLayoutEffect(() => {
-    if (ready && btn.current) gsap.fromTo(btn.current, { scale: 0, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.7, ease: 'elastic.out(1,.5)' })
-  }, [ready])
+    return () => { alive = false; clearTimeout(timer); tw.kill() }
+  }, [onDone])
 
   return (
     <section className="scene" ref={ref}>
-      <div className="mascot-wrap" data-in>
-        {config.mascotImage ? (
-          <>
-            {config.mascotHalo && <span className="halo" />}
-            <img className="mascot mascot-img bounce" src={`${import.meta.env.BASE_URL}${config.mascotImage}`} alt="" />
-          </>
-        ) : (
-          <Mascot className="mascot bounce" />
-        )}
-      </div>
+      <MascotBlock />
       <h1 className="title" data-in>{config.loaderTitle}</h1>
       <div className="bar sticker" data-in>
         <div className="bar-fill" style={{ width: `${pct}%` }} />
         <span className="bar-text">{pct}%</span>
       </div>
-      <div className="slot-h">
-        {ready && (
-          <button ref={btn} className="btn" onClick={onStart} disabled={busy}>{busy ? config.loaderBusy : config.loaderButton}</button>
-        )}
-      </div>
-      <p className="perm-note" data-in>{config.permNotice}</p>
     </section>
   )
 }
