@@ -5,7 +5,8 @@ export const config = {
   marquee: 'HAPPY BIRTHDAY YUNSEO',
 
   // 로딩 화면 마스코트: public/ 폴더에 넣은 이미지 파일명. null이면 코드로 그린 기본 토끼
-  mascotImage: 'mascot.png',
+  mascotImage: 'mascot.png', // 핑크빛 흰 몸 버전을 쓰려면 'mascot-pink.png'
+  mascotHalo: true, // 마스코트 뒤에 흰 원 스티커
   loaderTitle: '윤서에게 도착한\n선물 준비 중…',
   loaderButton: '열어보기',
 

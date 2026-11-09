@@ -130,6 +130,12 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 
 /* ---------- 로더 ---------- */
 .mascot { width: min(56vw, 230px); height: auto; display: block; }
+.mascot-wrap { --m: min(56vw, 230px); position: relative; width: var(--m); margin-bottom: 26px; }
+.mascot-wrap .mascot { position: relative; z-index: 1; width: 100%; }
+.halo {
+  position: absolute; left: 50%; top: 57%; width: 110%; aspect-ratio: 1; translate: -50% -50%;
+  background: #fff; border: 4px solid var(--ink); border-radius: 50%; box-shadow: 5px 6px 0 var(--ink);
+}
 .bounce { animation: bounce 1s ease-in-out infinite; transform-origin: 50% 100%; }
 @keyframes bounce {
   0%, 100% { transform: translateY(0) scale(1.04, .94); }
@@ -255,6 +261,7 @@ button { font-family: inherit; color: inherit; border: 0; background: none; padd
 @media (max-height: 640px) {
   .scene { gap: 8px; }
   .mascot { width: min(42vw, 170px); }
+  .mascot-wrap { --m: min(42vw, 170px); }
   .gift-stage { width: min(56vw, 230px); }
   .cake-wrap { width: min(72vw, 270px); }
   .controls { min-height: 110px; }
