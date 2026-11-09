@@ -2,6 +2,7 @@
 import { getCtx, resumeCtx } from './audioCtx.js'
 
 let muted = false
+const SFX_GAIN = 1.8 // BGM이 커진 만큼 효과음도 같이 키움
 
 function ac() {
   if (muted) return null
@@ -19,7 +20,7 @@ function tone({ freq, to, dur = 0.12, type = 'sine', vol = 0.18, delay = 0 }) {
   o.frequency.setValueAtTime(freq, t)
   if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur)
   g.gain.setValueAtTime(0.0001, t)
-  g.gain.exponentialRampToValueAtTime(vol, t + 0.01)
+  g.gain.exponentialRampToValueAtTime(vol * SFX_GAIN, t + 0.01)
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur)
   o.connect(g).connect(c.destination)
   o.start(t)
@@ -40,7 +41,7 @@ function noise({ dur = 0.2, vol = 0.2, freq = 1200, to, delay = 0 }) {
   f.frequency.setValueAtTime(freq, t)
   if (to) f.frequency.exponentialRampToValueAtTime(to, t + dur)
   const g = c.createGain()
-  g.gain.setValueAtTime(vol, t)
+  g.gain.setValueAtTime(vol * SFX_GAIN, t)
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur)
   src.connect(f).connect(g).connect(c.destination)
   src.start(t)

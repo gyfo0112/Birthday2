@@ -94,7 +94,7 @@ export default function CakeScene({ go, onCake }) {
   const placedRef = useRef([])
   const alive = useRef(true)
   // 뒤로가기 등으로 이 장면을 떠날 때 BGM 볼륨 복구, 남은 타이머가 장면을 넘기지 않게 함
-  useEffect(() => () => { alive.current = false; bgm.duck(0.55) }, [])
+  useEffect(() => () => { alive.current = false; bgm.duck(false) }, [])
   placedRef.current = placed
   outRef.current = out
 
@@ -116,7 +116,7 @@ export default function CakeScene({ go, onCake }) {
       for (let i = 0; i < config.candleCount; i++) setTimeout(() => sfx.pling(i), 500 + i * 180)
       setTimeout(() => {
         setPhase('wish')
-        bgm.duck(0.2)
+        bgm.duck(true)
         ;[0, 2, 4].forEach((n, k) => setTimeout(() => sfx.pling(n), k * 160))
       }, 500 + config.candleCount * 180 + 700)
       return 'lighting'
@@ -125,7 +125,7 @@ export default function CakeScene({ go, onCake }) {
 
   const endWish = () => {
     sfx.tap(); haptic(15)
-    bgm.duck(0.55)
+    bgm.duck(false)
     if (perms.mic === 'granted') start() // 시작 화면에서 허용해 둔 경우: 이 탭 안에서 바로 마이크 감지 시작
     setPhase('blow')
   }

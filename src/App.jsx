@@ -23,7 +23,6 @@ export default function App() {
   const [cake, setCake] = useState([])
   const wipe = useRef(null)
   const busy = useRef(false)
-  const started = useRef(false)
   const [starting, setStarting] = useState(false)
   const pending = useRef(null)
   const current = useRef('perm')
@@ -72,11 +71,11 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPop)
   }, [transition])
 
-  // 첫 화면의 탭: 소리 잠금 해제 + BGM 시작 (+ 원하면 마이크/모션 권한 요청) 후 로딩 화면으로
+  // 첫 화면의 탭: 소리 잠금 해제 + BGM 준비 (+ 원하면 마이크/모션 권한 요청) 후 로딩 화면으로
   const begin = (ask) => {
     if (starting) return
     sfx.unlock(); sfx.tap(); haptic(15)
-    if (!started.current) { started.current = true; bgm.start() }
+    bgm.prime() // 소리 없이 재생만 시작 (로딩 화면이 뜨면 Loader가 페이드인)
     if (!ask) { go('loader'); return }
     setStarting(true)
     const timeout = new Promise((r) => setTimeout(r, 30000)) // 팝업을 오래 방치해도 넘어가도록
