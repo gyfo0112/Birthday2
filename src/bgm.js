@@ -12,6 +12,8 @@ export const bgm = {
     gsap.to(audio, { volume: 0.55, duration: 2.5 })
   },
   setMuted(m) { audio.muted = m },
+  // 소원 빌 때 BGM을 살짝 낮췄다가 되돌림
+  duck(v) { gsap.to(audio, { volume: v, duration: 0.8 }) },
   restart() {
     audio.currentTime = 0
     this.start()

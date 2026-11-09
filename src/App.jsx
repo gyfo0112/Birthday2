@@ -16,6 +16,7 @@ export default function App() {
   const [scene, setScene] = useState('loader')
   const [round, setRound] = useState(0)
   const [muted, setMuted] = useState(false)
+  const [cake, setCake] = useState([])
   const wipe = useRef(null)
   const busy = useRef(false)
   const started = useRef(false)
@@ -37,7 +38,7 @@ export default function App() {
     go('gift')
   }
 
-  const replay = () => go('loader', () => setRound((r) => r + 1))
+  const replay = () => go('loader', () => { setCake([]); setRound((r) => r + 1) })
 
   const toggleMute = () => {
     const m = !muted
@@ -53,9 +54,9 @@ export default function App() {
         {scene === 'loader' && <Loader onStart={start} />}
         {scene === 'gift' && <Gift go={go} />}
         {scene === 'count' && <Countdown go={go} />}
-        {scene === 'cake' && <CakeScene go={go} />}
+        {scene === 'cake' && <CakeScene go={go} onCake={setCake} />}
         {scene === 'letter' && <Letter go={go} />}
-        {scene === 'end' && <Ending onReplay={replay} />}
+        {scene === 'end' && <Ending cake={cake} onReplay={replay} />}
       </div>
       <button className={`mute ${muted ? 'off' : ''}`} onClick={toggleMute} aria-label={muted ? '소리 켜기' : '소리 끄기'}>
         <SoundIcon muted={muted} />

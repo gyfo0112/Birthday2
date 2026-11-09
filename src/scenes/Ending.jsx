@@ -1,14 +1,40 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { SunBurst } from '../art/index.jsx'
 import { config } from '../config.js'
 import { burst, firework, fireworks, haptic } from '../fx.js'
 import { sfx } from '../sfx.js'
+import { deliverCard, makeCardBlob } from '../saveCard.js'
 
 const COLORS = ['#fff', '#ffd84d', '#ff5fa2', '#8fe3cf', '#b58cff']
 
-export default function Ending({ onReplay }) {
+export default function Ending({ cake = [], onReplay }) {
   const root = useRef(null)
+  const blobP = useRef(null)
+  const [msg, setMsg] = useState('')
+
+  // 공유 시트는 버튼 탭 직후에만 열 수 있어서(iOS) 이미지를 미리 만들어 둔다
+  useEffect(() => {
+    const t = setTimeout(() => {
+      blobP.current = makeCardBlob(cake)
+      blobP.current.catch(() => {})
+    }, 1500)
+    return () => clearTimeout(t)
+  }, [cake])
+
+  const save = async () => {
+    sfx.tap(); haptic(15)
+    setMsg(config.saveBusy)
+    try {
+      blobP.current ||= makeCardBlob(cake)
+      const r = await deliverCard(await blobP.current)
+      setMsg(r === 'cancel' ? '' : config.saveDone)
+    } catch {
+      blobP.current = null
+      setMsg(config.saveFail)
+    }
+    setTimeout(() => setMsg(''), 2600)
+  }
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -40,8 +66,10 @@ export default function Ending({ onReplay }) {
       </div>
       <p className="end-name" data-in>{config.name}야 💗</p>
       <p className="sub" data-in>{config.endSub}</p>
+      <div className="toast-slot">{msg && <p className="toast pop-in">{msg}</p>}</div>
       <div className="row" data-in>
         <button className="btn" onClick={again}>{config.againButton}</button>
+        <button className="btn mint" onClick={save}>{config.saveButton}</button>
         <button className="btn ghost" onClick={onReplay}>{config.replayButton}</button>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { CandleShape, Cake, CANDLE_BASE_Y, SLOTS, SignBoard, TOPPINGS, ToppingIcon, candleX } from '../art/index.jsx'
+import { bgm } from '../bgm.js'
+import { CandleShape, Cake, StarShape, CANDLE_BASE_Y, SLOTS, SignBoard, TOPPINGS, ToppingIcon, candleX } from '../art/index.jsx'
 import { config } from '../config.js'
 import { burst, haptic, rain } from '../fx.js'
 import { sfx } from '../sfx.js'
@@ -57,13 +58,23 @@ function Candle({ x, i, out, onTap }) {
   )
 }
 
-export default function CakeScene({ go }) {
+const WISH_STARS = Array.from({ length: 14 }, (_, i) => ({
+  x: 4 + ((i * 37) % 90),
+  y: 4 + ((i * 53) % 84),
+  d: (i % 7) * 0.37,
+  w: 14 + (i % 4) * 7,
+  c: ['#ffd84d', '#ffffff', '#8fe3cf', '#ff9ccc'][i % 4],
+}))
+
+export default function CakeScene({ go, onCake }) {
   const ref = useEnter()
   const cake = useRef(null)
   const [placed, setPlaced] = useState([])
   const [phase, setPhase] = useState('decorate') // decorate | lighting | blow | done
   const [out, setOut] = useState(() => Array(config.candleCount).fill(false))
   const outRef = useRef(out)
+  const placedRef = useRef([])
+  placedRef.current = placed
   outRef.current = out
 
   const { status, start, stop } = useBlow(() => blowAll())
@@ -82,13 +93,24 @@ export default function CakeScene({ go }) {
       if (p !== 'decorate') return p
       sfx.whoosh()
       for (let i = 0; i < config.candleCount; i++) setTimeout(() => sfx.pling(i), 500 + i * 180)
-      setTimeout(() => setPhase('blow'), 500 + config.candleCount * 180 + 600)
+      setTimeout(() => {
+        setPhase('wish')
+        bgm.duck(0.2)
+        ;[0, 2, 4].forEach((n, k) => setTimeout(() => sfx.pling(n), k * 160))
+      }, 500 + config.candleCount * 180 + 700)
       return 'lighting'
     })
   }
 
+  const endWish = () => {
+    sfx.tap(); haptic(15)
+    bgm.duck(0.55)
+    setPhase('blow')
+  }
+
   const win = () => {
     stop()
+    onCake?.(placedRef.current)
     setPhase('done')
     sfx.win(); haptic([30, 50, 30, 50, 80])
     burst({ x: 0.5, y: 0.5 }); rain(2000)
@@ -118,14 +140,19 @@ export default function CakeScene({ go }) {
 
   return (
     <section className="scene" ref={ref}>
+      {phase === 'wish' && <div className="wish-dim" />}
       <h2 className="title sm" data-in>
         {phase === 'decorate' && (showCount ? '맛있게 꾸미는 중 🍓' : config.decorateHint)}
         {phase === 'lighting' && config.lightingText}
+        {phase === 'wish' && config.wishHint}
         {phase === 'blow' && config.blowHint}
         {phase === 'done' && config.wishText}
       </h2>
 
-      <div className="cake-wrap" data-in>
+      <div className={`cake-wrap ${phase === 'wish' ? 'wishing' : ''}`} data-in>
+        {phase === 'wish' && WISH_STARS.map((st, i) => (
+          <StarShape key={i} color={st.c} className="wish-star" style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.w, animationDelay: `${st.d}s` }} />
+        ))}
         <div ref={cake} className="cake-inner">
           <Cake>
             {placed.map((p) => <Topping key={p.id} type={p.type} slot={p.slot} />)}
@@ -151,6 +178,11 @@ export default function CakeScene({ go }) {
               {showCount > 0 && <button className="btn" onClick={finish}>{config.decorateDone}</button>}
             </div>
           </>
+        )}
+        {phase === 'wish' && (
+          <div className="slot-h">
+            <button className="btn pop-in" style={{ animationDelay: '2.4s' }} onClick={endWish}>{config.wishDone}</button>
+          </div>
         )}
         {phase === 'blow' && (
           <div className="stack">

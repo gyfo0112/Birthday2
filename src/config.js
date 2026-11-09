@@ -21,6 +21,8 @@ export const config = {
   micFail: '마이크를 쓸 수 없어서 촛불을 직접 탭해서 꺼줘!',
   blowAllButton: '한 번에 끄기',
   wishText: '소원 빌었지? 🌟',
+  wishHint: '눈을 감고\n소원을 빌어봐…',
+  wishDone: '소원 다 빌었어!',
 
   letter: {
     title: '윤서에게 💌',
@@ -40,5 +42,9 @@ export const config = {
   endTitle: ['HAPPY', 'BIRTHDAY'],
   endSub: '윤서야, 오늘 하루 제일 행복하길!',
   againButton: '🎆 폭죽 한 번 더',
+  saveButton: '📷 케이크 저장',
+  saveBusy: '만드는 중…',
+  saveDone: '저장했어!',
+  saveFail: '이미지를 만들지 못했어',
   replayButton: '↺ 처음부터 다시',
 }

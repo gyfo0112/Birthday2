@@ -378,3 +378,25 @@ export function SignBoard({ name }) {
     </g>
   )
 }
+
+// 이미지 저장용: 애니메이션 없는 정적 케이크 (팻말 글자는 캔버스에서 따로 그림)
+export function CakeStatic({ placed, count }) {
+  return (
+    <Cake>
+      {placed.map((p) => {
+        const T = TOPPINGS[p.type]
+        return (
+          <g key={p.id} transform={`translate(${SLOTS[p.slot][0]} ${SLOTS[p.slot][1]})`}>
+            <g transform="scale(.85)"><T /></g>
+          </g>
+        )
+      })}
+      <SignBoard />
+      {Array.from({ length: count }, (_, i) => (
+        <g key={i} transform={`translate(${candleX(i, count)} ${CANDLE_BASE_Y})`}>
+          <CandleShape lit />
+        </g>
+      ))}
+    </Cake>
+  )
+}

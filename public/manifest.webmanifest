@@ -1,0 +1,12 @@
+{
+  "name": "윤서야 생일 축하해",
+  "short_name": "윤서 생일",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffc2dc",
+  "theme_color": "#ffc2dc",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
