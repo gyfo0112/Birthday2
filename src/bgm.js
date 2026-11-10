@@ -7,7 +7,7 @@ audio.preload = 'auto'
 
 // 노래 파일 자체가 평균 -20dB로 작게 녹음돼 있어서(순간 최대치는 거의 꽉 참) 게인을 키우고,
 // 찌그러지지 않도록 리미터(DynamicsCompressor)를 거친다. 측정: 평균 -25dB -> -14dB, 최대치 -0.9dB
-const LEVEL = 1.6 // 평소 BGM 크기 (게인)
+const LEVEL = 1.25 // 평소 BGM 크기 (게인). 평균 약 -16dB (1.6이면 -14dB로 조금 크게 들려서 낮춤)
 const DUCK = 0.36 // 소원 빌 때 줄이는 비율
 const FADE_IN = 2 // 로딩 화면에서 서서히 커지는 시간(초)
 

@@ -2,7 +2,7 @@
 import { getCtx, resumeCtx } from './audioCtx.js'
 
 let muted = false
-const SFX_GAIN = 1.8 // BGM이 커진 만큼 효과음도 같이 키움
+const SFX_GAIN = 1.5 // BGM 크기에 맞춘 효과음 배수
 
 function ac() {
   if (muted) return null
