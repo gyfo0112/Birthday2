@@ -2,7 +2,7 @@
 export const config = {
   name: '윤서',
   birthday: { year: 2026, month: 11, day: 12 }, // 이 날 0시에 잠금이 풀림
-  marquee: 'HAPPY BIRTHDAY YUNSEO',
+  marquee: 'HAPPY BIRTHDAY YOONSEO',
 
   // 로딩 화면 마스코트: public/ 폴더에 넣은 이미지 파일명. null이면 코드로 그린 기본 토끼
   mascotImage: 'mascot.png', // 핑크빛 흰 몸 버전을 쓰려면 'mascot-pink.png'

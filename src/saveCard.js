@@ -129,7 +129,7 @@ export async function makeCardBlob(placed) {
 
 // 공유 시트(아이폰: "이미지 저장") 우선, 안 되면 다운로드
 export async function deliverCard(blob) {
-  const file = new File([blob], 'yunseo-birthday-cake.png', { type: 'image/png' })
+  const file = new File([blob], 'yoonseo-birthday-cake.png', { type: 'image/png' })
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: `${config.name} 생일 케이크` })
@@ -141,7 +141,7 @@ export async function deliverCard(blob) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = 'yunseo-birthday-cake.png'
+  a.download = 'yoonseo-birthday-cake.png'
   document.body.appendChild(a)
   a.click()
   a.remove()
